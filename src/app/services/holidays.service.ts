@@ -1,3 +1,4 @@
+import { Length } from './../../../node_modules/lightningcss/node/ast.d';
 import { HttpClient } from "@angular/common/http";
 import { inject, Injectable } from "@angular/core";
 import { map, Observable } from "rxjs";
@@ -19,9 +20,10 @@ export class HolidaysService {
   private excelPath = 'assets/FESTIVOS.xlsx';
 
   public getHolidays(): Observable<Record<string, Holiday[]>> {
-    return this.http.get(this.excelPath, { responseType: 'arraybuffer' }).pipe(
+    const excelData = this.http.get(this.excelPath, { responseType: 'arraybuffer' }).pipe(
       map(buffer => this.parseExcel(buffer))
-    );
+    );    
+    return excelData;
   }
   
  private parseExcel(buffer: ArrayBuffer): Record<string, Holiday[]> {

@@ -2,11 +2,7 @@ import { Holiday, HolidayWeight, WeightColor } from './interfaces/holidays';
 import { Component, effect, inject, signal } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { CalendarMonth } from "./components/calendarMonth/calendarMonth";
-import { RegionSelectorComponent } from "./components/region-selector/region-selector";
 import { RegionSelectorAdv } from "./components/region-selector-adv/region-selector-adv";
-import { HolidaysService } from './services/holidays.service';
-import { rxResource } from '@angular/core/rxjs-interop';
-import { of } from 'rxjs';
 import { UploadHolidayweight } from "./components/upload-holidayweight/upload-holidayweight";
 import { WeightLegend } from "./components/weightLegend/weightLegend";
 
@@ -27,29 +23,19 @@ export class AppComponent {
   query = signal<string>('');
   app_weights = signal<HolidayWeight[]>([]);
   app_weightColors = signal<WeightColor[]>([]);
-  //holidaysService = inject(HolidaysService);
-  /**
-   *
-   */
+ selectedPoints = signal<number>(0);
+
   constructor() {    
     effect(() => {
       if(this.app_weights().length > 0){
-        console.log('PESOS RECIBIDOS EN APP COMPONENT:', this.app_weights());
+        //console.log('PESOS RECIBIDOS EN APP COMPONENT:', this.app_weights());        
       }
-      //console.log('Selected region code on AppComponent:', this.query());
-      // const holidays = this.holidaysService.getHolidays();
-      // holidays.forEach(element => {
-      //   console.log('Holidays loaded:', element[this.query()]);
-      //   console.log('Holidays nacionales:', element['NACIONALES']);
-      // });
-      
+      if(this.app_weightColors().length > 0){
+        //console.log('COLORES RECIBIDOS EN APP COMPONENT:', this.app_weightColors());
+      }   
     });
   }
-  
-  
-  
-  
-  
+    
   // holidaysResource = rxResource({
   // request: () =>({query:this.query()}),
   // loader: ({request})=>{        

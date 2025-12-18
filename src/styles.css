@@ -1,3 +1,14 @@
+@import "tailwindcss";
+@plugin "daisyui" {
+   themes: light --default, dark --prefersdark;
+ }
+div.disabled {
+  pointer-events: auto;
+  color: grey;
+}
+div.disabled:active {
+  pointer-events: none;
+}
 .month {
     display: inline-block;
     margin: 10px;
@@ -31,12 +42,15 @@
     position: relative;    
   }
   .day.selected {
-    background-color: #b3d9ff;
+    background-color: yellow;
   }
   .disabled {
     color: red;
     background-color: #FFD6D6;
-    pointer-events: none;
+    pointer-events: none;    
+  }
+  .disabled:hover {
+    cursor: not-allowed;
   }
   .noselect {
     -webkit-touch-callout: none; /* iOS Safari */

@@ -22,24 +22,39 @@ export interface Holiday {
     day: string;   // formato dd-mm
     name: string;  // Nombre del festivo
 }
+
+export const paletasColores: string[] = [
+  'rgb(255, 179, 186)',
+  'rgb(255, 223, 186)',
+  'rgb(255, 255, 186)',
+  'rgb(186, 255, 201)',
+  'rgb(186, 225, 255)',
+  'rgb(219, 219, 219)'
+];
+
 export const regionsKV: {[key: string]: string} = {
   "AN": "Andalucía",
   "AR": "Aragón",
   "AS": "Asturias",
-  "CB": "Cantabria",
+  "CA": "Cantabria",
   "CE": "Ciudad de Ceuta",
   "CL": "Castilla y León",
-  "CM": "Castile-La Mancha",
-  "CN": "Islas Canarias",
+  "CM": "Castile-La Mancha",  
+  "CN-HI": "Islas Canarias - El Hierro",
+  "CN-FU": "Islas Canarias - Fuerteventura",
+  "CN-GC": "Islas Canarias - Gran Canaria",
+  "CN-LP": "Islas Canarias - La Palma",
+  "CN-LN": "Islas Canarias - Lanzarote",
+  "CN-TF": "Islas Canarias - Tenerife",  
   "CT": "Cataluña",
   "EX": "Extremadura",
   "GA": "Galicia",
   "IB": "Illes Balears",
-  "MC": "Murcia Region",
-  "MD": "Comunidad de Madrid",
-  "ML": "Ciudad de Melilla",
-  "NC": "Comunidad Foral de Navarra",
+  "MU": "Murcia Region",
+  "MA": "Comunidad de Madrid",
+  "ME": "Ciudad de Melilla",
+  "NA": "Comunidad Foral de Navarra",
   "PV": "País Vasco",
   "RI": "La Rioja",
-  "VC": "Comunitat Valenciana"
+  "VA": "Comunitat Valenciana"  
 };
