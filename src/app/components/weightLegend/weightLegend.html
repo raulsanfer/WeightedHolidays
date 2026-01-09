@@ -1,9 +1,11 @@
 <ul>
-    <li *ngFor="let item of distinctDays || []; let i = index"
+    <li *ngFor="let item of this.colors || []; let i = index"
         style="list-style: none; color:white;float: left; margin-left:35px; padding: 5px;"
-        [style.backgroundColor]="this.colors[i].color">
-        <span style="width: 30px;height: 20px;border: 1px solid black;">
-        </span>
-        {{item.weight}}
+        [style.backgroundColor]="this.colors[i].color">        
+        @if (item.weight !== -1) {
+            {{ item.weight }}
+        } @else {
+            &nbsp;&nbsp;&nbsp;&nbsp;
+        }
     </li>
 </ul>

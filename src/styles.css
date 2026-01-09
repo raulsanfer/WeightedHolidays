@@ -42,7 +42,22 @@ div.disabled:active {
     position: relative;    
   }
   .day.selected {
-    background-color: yellow;
+    background-color: transparent;
+  }
+  .day > span {
+  position: relative;
+  z-index: 2; /* siempre encima del ::after */
+}
+  .day.selected::after {
+    content: "";
+    position: absolute;
+    inset: 0;             /* top/right/bottom/left: 0 */
+    background: #e53935; /*  color superior */
+
+    /* Define el polígono que crea la diagonal:
+      En este ejemplo la línea va del 30% en el borde izquierdo al 80% en el borde derecho */
+    clip-path: polygon(0 0, 100% 0, 100% 80%, 0 30%);
+    z-index: 1;
   }
   .disabled {
     color: red;

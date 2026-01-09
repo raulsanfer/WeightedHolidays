@@ -1,0 +1,48 @@
+<div class="calendar">
+
+  <div *ngFor="let month of calendarMonths()" class="month">
+
+    <div class="month-name">
+      {{ month.monthName }}
+    </div>
+
+    <div class="weekdays">
+      <div *ngFor="let w of weekdays">{{ w }}</div>
+    </div>
+
+    <div class="days">
+
+      <!-- padding -->
+      <div *ngFor="let _ of [].constructor(month.startPadding)"></div>
+
+      <!-- días -->
+      <div
+        *ngFor="let day of month.days"
+        class="day noselect"
+        [class.selected]="day.selected"
+        [class.disabled]="day.disabled"
+        [style.backgroundColor]="
+          day.isHoliday
+            ? holidayColor
+            : day.weight
+              ? getWeightColor(day.weight)
+              : null
+        "
+        [style.color]="day.isHoliday || day.weight ? '#fff' : null"
+        [title]="
+          day.isHoliday
+            ? 'Festivo: ' + day.holidayName
+            : day.weight ?? '1'
+        "
+        (click)="!day.disabled && toggleSelection(day)"
+      >
+        <span>{{ day.dayNumber }}</span>    
+      </div>
+
+    </div>
+  </div>
+  <div style="text-align: right;">
+      <button class="btn btn-primary" (click)="saveSelection()">Guardar</button>
+      <button class="btn btn-secondary" style="margin-left:10px" (click)="clearSelection()">Limpiar</button>
+    </div>
+</div>

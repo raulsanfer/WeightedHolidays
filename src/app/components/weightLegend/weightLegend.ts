@@ -21,18 +21,21 @@ export class WeightLegend {
     this.colors = this.distinctDays.map(dw => {      
       return { weight: dw.weight, color: this.valueToRGB(dw.weight) };    
     });
-    
+    //add selected color at the end
+   // this.colors.push( { weight: -1, color: 'yellow' } );
     this.distinctColors.emit(this.colors);    
   });
  }
+ 
+getRandomInt(max:number) {
+  return Math.floor(Math.random() * max);
+}
 
  valueToRGB(value: number): string {
-  const r = Math.random() * (255 - 0) + 0;// Math.max(0, 255);// Math.min(1, value)) ; // clamp 0–1
- const b = Math.random() * (255 - 0) + 0;//Math.max(0, 255);
-  //const r = v;// Math.round(v * 255);        // rojo crece
-  const g = 0;                          // verde fijo
-  //const b = Math.round((1 - v) * 255);  // azul decrece
-
+  const r = this.getRandomInt(255);
+  const b = this.getRandomInt(255);  
+  const g = this.getRandomInt(100);//0; 
   return `rgb(${r}, ${g}, ${b})`;
 }
+
 }

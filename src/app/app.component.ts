@@ -23,7 +23,7 @@ export class AppComponent {
   query = signal<string>('');
   app_weights = signal<HolidayWeight[]>([]);
   app_weightColors = signal<WeightColor[]>([]);
- selectedPoints = signal<number>(0);
+  selectedPoints = signal<number>(0);
 
   constructor() {    
     effect(() => {

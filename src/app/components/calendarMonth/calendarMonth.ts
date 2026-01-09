@@ -1,14 +1,18 @@
 import { Component, ElementRef, ViewChild, AfterViewInit, inject, Signal, signal, effect, input, output} from '@angular/core';
 import { HolidaysService } from '../../services/holidays.service';
-import { Holiday, HolidayWeight, paletasColores, WeightColor } from '../../interfaces/holidays';
+import { CalendarDay, CalendarMonthData, Holiday, HolidayWeight, paletasColores, WeightColor } from '../../interfaces/holidays';
+import { CommonModule } from '@angular/common';
+
 
 @Component({
   selector: 'calendar-month',
-  imports: [],
-  template: '<div #calendar class="calendar"></div>',
+  imports: [CommonModule],
+  templateUrl: './calendarMonth.html' ,
   styleUrls: ['./calendarMonth.css']  
 })
+
 export class CalendarMonth implements AfterViewInit{
+
 @ViewChild('calendar', { static: true }) calendarRef!: ElementRef<HTMLDivElement>;
   
 holidaysService = inject(HolidaysService);
@@ -19,132 +23,95 @@ $stateCode = input<string>('MD');
 holidaysData: Record<string, Holiday[]> | undefined;
 holidays : Holiday[] = [];
 $pointsOut = output<number>();
-//sumaPuntos: number = 0;
+
 selectedDays: Record<string, number> = {};
+selectedDaysStyle: Record<string, string> = {};
+
+calendarMonths = signal<CalendarMonthData[]>([]);
+weekdays = ['L', 'M', 'X', 'J', 'V', 'S', 'D'];
+holidayColor = 'rgb(50, 99, 71)';
 
 constructor() {
      effect(() => {
           console.log('STATE:', this.$stateCode());
-          if(this.$weightsSignal().length > 0 && this.$weightColors()?.length > 0){
-            this.generateCalendar(this.Year,this.$stateCode());
+          if(this.$weightsSignal().length > 0 && this.$weightColors()?.length > 0){            
+            this.generateCalendar(this.Year,this.$stateCode());            
           }    
         });
 }
 
-/*updateTotalVacationDays() {
-    let total = 0;
-    for (let day in this.selectedDays) {
-      total += this.selectedDays[day];
-    }
-    document.getElementById('totalVacationDays').innerText = total;
-  }*/
-
-private generateCalendar(year: number,state: string): void {
-  
-  const holidayColor = 'rgb(50, 99, 71)'; // Color para festivos   
-  const calendar = this.calendarRef.nativeElement;
-  calendar.innerHTML = ''; // Limpiar calendario previo
+private generateCalendar(year: number, state: string): void {
 
   this.holidaysService.getHolidays().subscribe(data => {
-    
-    this.holidaysData = data; 
-    this.holidays = [...(this.holidaysData['NACIONALES'] || []), ...(this.holidaysData[state] || [])];
- 
+
+    const storedSelectedDays = this.loadSelectedDays(year);
+
+     // Load selected days from storage
+      for (let key in storedSelectedDays) {
+        const weight = storedSelectedDays[key];
+        this.selectedDays[key] = weight;
+      }
+      
+
+    const holidays = [
+      ...(data['NACIONALES'] || []),
+      ...(data[state] || [])
+    ];
+
+    const monthsArray: CalendarMonthData[] = [];
+
     for (let month = 0; month < 12; month++) {
-      const monthContainer = document.createElement('div');
-      monthContainer.classList.add('month');
 
-      // Nombre del mes
-      const monthName = document.createElement('div');
-      monthName.classList.add('month-name');
-      monthName.textContent = new Date(this.Year, month, 1).toLocaleString('default', { month: 'long' });
-      monthContainer.appendChild(monthName);
+      const startPadding = this.getStartColumn(month, year);
+      const totalDays = new Date(year, month + 1, 0).getDate();
 
-      // Días de la semana
-      const weekdaysContainer = document.createElement('div');
-      weekdaysContainer.classList.add('weekdays');
-      const weekdays = ['L', 'M', 'X', 'J', 'V', 'S', 'D'];
-      weekdays.forEach(day => {
-        const cell = document.createElement('div');
-        cell.textContent = day;
-        weekdaysContainer.appendChild(cell);
-      });
-      monthContainer.appendChild(weekdaysContainer);
+      const days: CalendarDay[] = [];
 
-      // Contenedor de días
-      const daysContainer = document.createElement('div');
-      daysContainer.classList.add('days');
-
-      const startColumn = this.getStartColumn(month, this.Year);
-
-      // Espacios vacíos antes del primer día
-      for (let i = 0; i < startColumn; i++) {
-        const emptyCell = document.createElement('div');
-        daysContainer.appendChild(emptyCell);
-      }
-
-      // Días del mes
-      const totalDays = new Date(this.Year, month + 1, 0).getDate();
       for (let day = 1; day <= totalDays; day++) {
-        const cell = document.createElement('div');
-        cell.textContent = day.toString();
-        cell.classList.add('day', 'noselect');
 
-        const valueKey = `${month + 1}-${day}`;
-        const currentDate = new Date(this.Year, month, day);
-        const isWeekend = currentDate.getDay() === 0 || currentDate.getDay() === 6;
-                
-        //console.log('datos fecha',this.holidays);
-        const isHoliday = this.holidays.find(holiday => {
-          const [holidayDay, holidayMonth] = holiday.day.split('-').map(Number);          
-          return holidayDay === day && holidayMonth === (month + 1);
+        const date = new Date(year, month, day);
+        const isWeekend = date.getDay() === 0 || date.getDay() === 6;
+
+        const holiday = holidays.find(h => {
+          const [d, m] = h.day.split('-').map(Number);
+          return d === day && m === (month + 1);
         });
-        if(day===28 && month + 1 === 2) {
-          console.log('Festivo encontrado el 28/2:', isHoliday);
-        }
-        const holidayName = isHoliday ? isHoliday.name : null;
 
-        const currentWeight = this.$weightsSignal().find(w => w.day.toLocaleDateString() === currentDate.toLocaleDateString());
-        if (isWeekend) {
-          cell.classList.add('disabled');          
-          cell.title = 'No se puede seleccionar este día';                    
-          cell.style.backgroundColor = 'rgb(220,220,220)';
-        }
-        else if (isHoliday) {
-          cell.classList.add('disabled');
-          cell.setAttribute('title', holidayName ? `Festivo: ${holidayName}` : 'Festivo');         
-          cell.style.backgroundColor = holidayColor;
-          cell.style.color = 'rgb(255,255,255)';
-        }
-        else if (currentWeight === undefined)
-        {
-          //vale 1
-          cell.addEventListener('click', () => this.toggleSelection(cell, month + 1, day, 1));
-          cell.setAttribute('title', '1');
-        }
-        else {
-          const getColor = this.$weightColors()?.find(wc => {
-            if(wc.weight === currentWeight.weight){              
-              return wc;
-            }
-            return undefined;
-          });
-          cell.style.backgroundColor = getColor ? getColor.color : "rgb(255,255,255)";
-          cell.addEventListener('click', () => this.toggleSelection(cell, month + 1, day, currentWeight.weight));
-          cell.setAttribute('title', currentWeight.weight.toString());
-           cell.style.color = 'rgb(255,255,255)';
-        }
+        const weightData = this.$weightsSignal()
+          .find(w => w.day.toLocaleDateString() === date.toLocaleDateString());
 
-        cell.id = valueKey;
-        daysContainer.appendChild(cell);
+        const disabled = isWeekend || !!holiday;
+
+        days.push({
+          date,
+          dayNumber: day,
+          month: month + 1,
+          isWeekend,
+          isHoliday: !!holiday,
+          holidayName: holiday?.name,
+          weight: weightData?.weight,
+          disabled,
+          selected: !!storedSelectedDays[`${month + 1}-${day}`]
+        });
       }
-
-      monthContainer.appendChild(daysContainer);
-      calendar.appendChild(monthContainer);
+     
+      monthsArray.push({
+        monthIndex: month,
+        monthName: new Date(year, month, 1)
+          .toLocaleString('default', { month: 'long' }),
+        startPadding,
+        days
+      });
+      
     }
-     });
+   
+    this.calendarMonths.set(monthsArray);
+  });
+}
 
-  
+  getWeightColor(weight: number): string {
+    const weightColor = this.$weightColors()?.find(wc => wc.weight === weight);
+    return weightColor ? weightColor.color : 'rgb(255,255,255)';
   }
 
   private getStartColumn(month: number, year: number): number {
@@ -152,37 +119,91 @@ private generateCalendar(year: number,state: string): void {
     return firstDay === 0 ? 6 : firstDay - 1; // Ajuste para que Lunes sea el primer día
   }
 
- 
-  private toggleSelection(thiscell: HTMLElement, month: number, day: number, value: number): void {    
-    const key = `${month}-${day}`;
-    if (this.selectedDays[key]) {
-      delete this.selectedDays[key];
-    } else {
-      this.selectedDays[key] = value;
-    }
-    const cell = document.getElementById(key);
-    thiscell.classList.toggle('selected');
+private loadSelectedDays(year: number): Record<string, number> {
+  const raw = localStorage.getItem(`selectedDays${year}`);
+  console.log('Cargando selección guardada:', raw);
+  return raw ? JSON.parse(raw) : {};
+}
 
-    //this.sumaPuntos+=value;    
-    //this.$pointsOut.emit(Number(this.sumaPuntos.toFixed(3)));
-    this.updateTotalVacationDays();
-  }
+toggleSelection(day: CalendarDay) {
+  const weight = day.weight ?? 1;
+  const key = `${day.month}-${day.dayNumber}`;
+  console.log(key);
+  console.log(this.selectedDays);
+  if (this.selectedDays[key]) {
+    console.log(false);
+    delete this.selectedDays[key];          
+    day.selected = false;    
+  } else {
+    console.log(true);
+    this.selectedDays[key] = weight;
+    day.selected = true;    
+  }  
+  this.updateTotalVacationDays();  
+} 
+
  
   updateTotalVacationDays() {
     let total = 0;
     for (let day in this.selectedDays) {
       total += this.selectedDays[day];
     }
-    this.$pointsOut.emit(total);//Number(this.sumaPuntos.toFixed(3)));
-    //document.getElementById('totalVacationDays').innerText = total;
+    this.$pointsOut.emit(total);//Number(this.sumaPuntos.toFixed(3)));    
   }
 
+  // Función para guardar la selección en localStorage
+  saveSelection() {
+    localStorage.setItem(`selectedDays${this.Year}`, JSON.stringify(this.selectedDays));
+    alert('Selección guardada.');
+  }
+
+  // Función para cargar la selección desde localStorage al cargar la página
+ loadSelection() {
+    const savedSelection = localStorage.getItem(`selectedDays${this.Year}`);
+    if (savedSelection) {
+      this.selectedDays = JSON.parse(savedSelection);
+      // Actualizar la visualización de los días seleccionados
+      for (let day in this.selectedDays) {
+        console.log('Día seleccionado cargado:', day);
+        const [month, dayOfMonth] = day.split('-');
+        const cellId = `${month}-${dayOfMonth}`;
+        const cell = document.getElementById(cellId);
+        console.log(cell);
+        console.log('Celda encontrada:', `${month}-${dayOfMonth}`);
+        if (cell != null) {
+          console.log('Día seleccionado pintado:', day);
+          cell?.classList.remove('noselect'); // Remove first to avoid duplicates
+          cell?.classList.add('selected');
+        }
+      }
+      this.updateTotalVacationDays();
+    }
+  }
+
+  // Función para limpiar la selección de días
+  clearSelection() {
+    this.selectedDays = {};
+    localStorage.setItem(`selectedDays${this.Year}`,'');      
+    this.calendarMonths().forEach(month => {
+      month.days.forEach(day => {
+        day.selected = false;
+      });
+    });
+    //this.saveSelection(); // Guardar selección vacía
+    const selectedCells = document.querySelectorAll('.day.selected');
+    selectedCells.forEach(cell => {
+      cell.classList.remove('selected');
+    });
+    this.updateTotalVacationDays();
+  }
+  
  paletteValue(value:number):string{
   return paletasColores[value] || 'rgb(200,200,200)';
  }
  
   ngAfterViewInit(): void {
     //this.generateCalendar(this.Year,'AN');
+    //this.loadSelection();
   } 
 
 }

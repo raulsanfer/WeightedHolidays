@@ -23,6 +23,31 @@ export interface Holiday {
     name: string;  // Nombre del festivo
 }
 
+export interface CalendarMonthData {
+  monthIndex: number;
+  monthName: string;
+  startPadding: number;
+  days: CalendarDay[];
+}
+
+export interface CalendarDay {
+  date: Date;
+  dayNumber: number;
+  month: number;
+  isWeekend: boolean;
+  isHoliday: boolean;
+  holidayName?: string;
+  weight?: number;
+  disabled: boolean;
+   selected: boolean;
+}
+
+export interface CalendarMonth {
+  monthIndex: number;
+  monthName: string;
+  startPadding: number;
+  days: CalendarDay[];
+}
 export const paletasColores: string[] = [
   'rgb(255, 179, 186)',
   'rgb(255, 223, 186)',
@@ -31,6 +56,8 @@ export const paletasColores: string[] = [
   'rgb(186, 225, 255)',
   'rgb(219, 219, 219)'
 ];
+
+export const selectedColor = 'orange'; // Color para selección (Cornflower Blue)
 
 export const regionsKV: {[key: string]: string} = {
   "AN": "Andalucía",

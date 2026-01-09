@@ -38,13 +38,13 @@
 
       <!-- Placeholder provisional -->
       <div class="text-sm opacity-60 italic">
-        {{ selectedPoints() }} puntos seleccionados
+        <span style="font-size:large;font-weight: bold;">{{ selectedPoints().toFixed(3) }}</span> puntos seleccionados
       </div>
     </div>
 
     <div class="border border-base-300 rounded-lg p-4">
       <label class="label pb-2">
-        <span class="label-text font-semibold">Leyenda de colores</span>
+        <span class="label-text font-semibold">Leyenda de colores por puntos</span>
       </label>
 
       <weight-legend
@@ -74,6 +74,7 @@
       [$weightColors]="app_weightColors()"
       [$weightsSignal]="app_weights()">
     </calendar-month>
+   
   </div>
 </div>
 
@@ -96,7 +97,6 @@
     <p>Total de días de vacaciones seleccionados: <span id="totalVacationDays">0</span></p>
 
 </div> -->
-<!-- <button onclick="saveSelection()">Guardar</button>
-<button onclick="clearSelection()">Limpiar</button> -->
+
 
 <router-outlet />
