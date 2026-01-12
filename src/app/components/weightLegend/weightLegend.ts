@@ -17,7 +17,7 @@ export class WeightLegend {
   effect(() => {
     
     this.distinctDays = [...new Map((this.items() ?? []).map(e => [e.weight, e])).values()];
-    
+    let count = 0;
     this.colors = this.distinctDays.map(dw => {      
       return { weight: dw.weight, color: this.valueToRGB(dw.weight) };    
     });
@@ -28,13 +28,14 @@ export class WeightLegend {
  }
  
 getRandomInt(max:number) {
+  console.log(Math.random());
   return Math.floor(Math.random() * max);
 }
 
  valueToRGB(value: number): string {
   const r = this.getRandomInt(255);
   const b = this.getRandomInt(255);  
-  const g = this.getRandomInt(100);//0; 
+  const g = this.getRandomInt(255);//0; 
   return `rgb(${r}, ${g}, ${b})`;
 }
 
