@@ -1,0 +1,6 @@
+<select class="select" (change)="emitirValor($event)">   >
+      <option value="" disabled >{{ placeholder }}</option>
+      @for (r of displayed; track r.key) {
+        <option [value]="r.key" [selected]="r.key === selected">{{ r.value }}</option>
+      }
+</select>

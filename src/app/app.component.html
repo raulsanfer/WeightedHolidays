@@ -1,0 +1,102 @@
+
+<div class="w-full space-y-10">
+<h2 class="font-title text-2xl md:text-3xl lg:text-4xl font-bold" style="text-align: center;margin-top: 10px;">Calendario de Vacaciones 2026</h2>
+  <!-- ────────────────────────
+       FILTROS (fila superior)
+  ───────────────────────── -->
+  <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
+
+    <!-- Región -->
+    <div class="form-control border border-base-300 rounded-lg p-4">
+      <label class="label">
+        <span class="label-text font-semibold">Selecciona tu región (para marcar los festivos)</span>
+      </label>
+      <br/>
+      <region-selector-adv 
+        class="w-full"
+        (value)="query.set($event)">
+      </region-selector-adv>
+    </div>
+
+    <!-- Upload Excel -->
+    <div class="form-control border border-base-300 rounded-lg p-4">
+      <label class="label">
+        <span class="label-text font-semibold">Subir fichero de pesos (.xlsx)</span>
+      </label>
+<br/>
+      <upload-holidayweight 
+        class="w-full"
+        (weights)="app_weights.set($event)">
+      </upload-holidayweight>
+    </div>
+
+    <!-- Tercer componente (literal / resultados futuros) -->
+    <div class="form-control border border-base-300 rounded-lg p-4">
+      <label class="label">
+        <span class="label-text font-semibold">Resultados</span>
+      </label>
+
+      <!-- Placeholder provisional -->
+      <div class="text-sm opacity-60 italic">
+        <span style="font-size:large;font-weight: bold;">{{ selectedPoints().toFixed(3) }}</span> puntos seleccionados
+      </div>
+    </div>
+
+    <div class="border border-base-300 rounded-lg p-4">
+      <label class="label pb-2">
+        <span class="label-text font-semibold">Leyenda de colores por puntos</span>
+      </label>
+
+      <weight-legend
+        class="w-full"
+        [items]="app_weights()"
+        (distinctColors)="app_weightColors.set($event)">
+      </weight-legend>
+    </div>
+  </div>
+
+  <!-- ────────────────────────
+       FILA LEYENDA
+  ───────────────────────── -->
+  
+  <!-- ────────────────────────
+       FILA CALENDARIO
+  ───────────────────────── -->
+  <div class="border border-base-300 rounded-lg p-4">
+    <label class="label pb-2">
+      <span class="label-text font-semibold text-lg">Calendario</span>
+    </label>
+
+    <calendar-month
+      class="w-full block"
+      ($pointsOut)="selectedPoints.set($event)"
+      [$stateCode]="query()"
+      [$weightColors]="app_weightColors()"
+      [$weightsSignal]="app_weights()">
+    </calendar-month>
+   
+  </div>
+</div>
+
+
+<!-- <div class="flex flex-row">
+    <div class="mr-4">
+        Selecciona tu región:
+        <region-selector-adv (value)="query.set($event)"></region-selector-adv>
+    </div>
+    <div class="mr-6" > 
+        <upload-holidayweight (weights)="app_weights.set($event)" ></upload-holidayweight>
+    </div>
+    <div class="mr-6">
+        <weight-legend [items]="app_weights()" (distinctColors)="app_weightColors.set($event)"></weight-legend>
+    </div>
+    <div class="">
+        <calendar-month [$stateCode]="query()" [$weightColors]="app_weightColors()" [$weightsSignal]="app_weights()"></calendar-month>
+    </div>
+
+    <p>Total de días de vacaciones seleccionados: <span id="totalVacationDays">0</span></p>
+
+</div> -->
+
+
+<router-outlet />

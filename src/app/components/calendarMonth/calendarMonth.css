@@ -1,0 +1,52 @@
+/* :host {
+  display: block;
+} */
+:host(.month) {
+    display: inline-block;
+    margin: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    overflow: hidden;
+  }
+  :host(.month-name)  {
+    background-color: #f2f2f2;
+    padding: 10px;
+    text-align: center;
+    font-weight: bold;
+  }
+  :host(.weekdays) {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    padding: 10px;
+    padding-right: 5px;
+    font-weight: bold;
+    margin-left: 10px;
+  }
+  :host(.days) {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    padding: 10px;    
+  }
+  :host(.day) {
+    text-align: center;
+    padding: 5px;
+    cursor: pointer;
+    position: relative;    
+  }
+  :host(.day.selected) {
+    background-color: #b3d9ff;
+  }
+  :host(.disabled) {
+    color: red;
+    background-color: #FFD6D6;
+    pointer-events: none;
+  }
+  :host(.noselect) {
+    -webkit-touch-callout: none; /* iOS Safari */
+    -webkit-user-select: none; /* Safari */
+    -khtml-user-select: none; /* Konqueror HTML */
+    -moz-user-select: none; /* Firefox */
+    -ms-user-select: none; /* Internet Explorer/Edge */
+    user-select: none; /* Non-prefixed version, currently
+                                  supported by Chrome and Opera */
+}

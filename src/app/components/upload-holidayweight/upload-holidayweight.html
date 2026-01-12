@@ -1,0 +1,16 @@
+<input
+  type="file"
+  accept=".xlsx,.xls"
+  (change)="onFileSelected($event)"
+  class="file-input"
+/>
+
+<!-- <div *ngIf="items?.length">
+  <h3>Registros cargados:</h3>
+  <ul>
+    <li *ngFor="let h of items">
+      {{ h.day | date:'yyyy-MM-dd' }} → {{ h.weight }}
+    </li>
+  </ul>
+</div> -->
+
