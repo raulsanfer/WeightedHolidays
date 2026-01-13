@@ -31,7 +31,7 @@ weights = output<HolidayWeight[]>();
       
       this.items = rows.slice(1).map((r: any[]) => ({
         day: this.excelDateToJSDate(r[0]),
-        weight: Number(r[1])
+        weight: Number(1 - r[1])
       }));      
       this.weights.emit(this.items);
     };
