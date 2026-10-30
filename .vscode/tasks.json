@@ -4,6 +4,7 @@
   "tasks": [
     {
       "type": "npm",
+      "label": "Iniciar servidor Angular",
       "script": "start",
       "isBackground": true,
       "problemMatcher": {
@@ -15,7 +16,7 @@
             "regexp": "(.*?)"
           },
           "endsPattern": {
-            "regexp": "bundle generation complete"
+            "regexp": "Application bundle generation complete"
           }
         }
       }

@@ -1,5 +1,5 @@
 import { Holiday, HolidayWeight, WeightColor } from './interfaces/holidays';
-import { Component, effect, inject, signal } from '@angular/core';
+import { Component, effect, signal } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { CalendarMonth } from "./components/calendarMonth/calendarMonth";
 import { RegionSelectorAdv } from "./components/region-selector-adv/region-selector-adv";
@@ -20,6 +20,7 @@ export type HeightColor = {
 })
 export class AppComponent {
   title = 'Babel-holidays';
+  readonly year = this.getValidYear(new URLSearchParams(window.location.search).get('year'));
   query = signal<string>('');
   app_weights = signal<HolidayWeight[]>([]);
   app_weightColors = signal<WeightColor[]>([]);
@@ -34,6 +35,12 @@ export class AppComponent {
         //console.log('COLORES RECIBIDOS EN APP COMPONENT:', this.app_weightColors());
       }   
     });
+  }
+
+  private getValidYear(value: string | null): number {
+    const year = Number(value);
+    const nowyear = new Date().getFullYear();
+    return Number.isInteger(year) && year >= 1900 && year <= 2100 ? year : nowyear;
   }
     
   // holidaysResource = rxResource({

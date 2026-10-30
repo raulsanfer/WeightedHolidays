@@ -16,7 +16,7 @@ export class CalendarMonth implements AfterViewInit{
 @ViewChild('calendar', { static: true }) calendarRef!: ElementRef<HTMLDivElement>;
   
 holidaysService = inject(HolidaysService);
-Year = 2026;
+year = input<number>(2027);
 $weightsSignal = input<HolidayWeight[]>([]);
 $weightColors = input<WeightColor[]>([]);
 $stateCode = input<string>('MD');
@@ -35,7 +35,7 @@ constructor() {
      effect(() => {
           console.log('STATE:', this.$stateCode());
           if(this.$weightsSignal().length > 0 && this.$weightColors()?.length > 0){            
-            this.generateCalendar(this.Year,this.$stateCode());            
+            this.generateCalendar(this.year(),this.$stateCode());            
           }    
         });
 }
@@ -44,6 +44,7 @@ private generateCalendar(year: number, state: string): void {
 
   this.holidaysService.getHolidays().subscribe(data => {
 
+    this.selectedDays = {};
     const storedSelectedDays = this.loadSelectedDays(year);
 
      // Load selected days from storage
@@ -106,6 +107,7 @@ private generateCalendar(year: number, state: string): void {
     }
    
     this.calendarMonths.set(monthsArray);
+    this.updateTotalVacationDays();
   });
 }
 
@@ -153,13 +155,13 @@ toggleSelection(day: CalendarDay) {
 
   // Función para guardar la selección en localStorage
   saveSelection() {
-    localStorage.setItem(`selectedDays${this.Year}`, JSON.stringify(this.selectedDays));
+    localStorage.setItem(`selectedDays${this.year()}`, JSON.stringify(this.selectedDays));
     alert('Selección guardada.');
   }
 
   // Función para cargar la selección desde localStorage al cargar la página
  loadSelection() {
-    const savedSelection = localStorage.getItem(`selectedDays${this.Year}`);
+    const savedSelection = localStorage.getItem(`selectedDays${this.year()}`);
     if (savedSelection) {
       this.selectedDays = JSON.parse(savedSelection);
       // Actualizar la visualización de los días seleccionados
@@ -183,7 +185,7 @@ toggleSelection(day: CalendarDay) {
   // Función para limpiar la selección de días
   clearSelection() {
     this.selectedDays = {};
-    localStorage.setItem(`selectedDays${this.Year}`,'');      
+    localStorage.setItem(`selectedDays${this.year()}`,'');      
     this.calendarMonths().forEach(month => {
       month.days.forEach(day => {
         day.selected = false;
